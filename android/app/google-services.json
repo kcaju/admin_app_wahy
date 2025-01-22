@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "905288604776",
+    "project_id": "halo-2ab0e",
+    "storage_bucket": "halo-2ab0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905288604776:android:3a3a0400175e9fc8bf6fdd",
+        "android_client_info": {
+          "package_name": "com.example.admin_app_wahy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRAyYTZs5E11B893KmR-0xfVbD36aWTrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:905288604776:android:03c4e64b95179796bf6fdd",
+        "android_client_info": {
+          "package_name": "com.example.newsample_fire"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRAyYTZs5E11B893KmR-0xfVbD36aWTrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
