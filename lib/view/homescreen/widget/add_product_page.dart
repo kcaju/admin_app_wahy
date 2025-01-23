@@ -22,6 +22,8 @@ class _AddProductPageState extends State<AddProductPage> {
   TextEditingController ourprice = TextEditingController();
   TextEditingController tax = TextEditingController();
   TextEditingController amount = TextEditingController();
+  TextEditingController created = TextEditingController();
+  TextEditingController updated = TextEditingController();
   TextEditingController gross = TextEditingController();
   TextEditingController productweight = TextEditingController();
   TextEditingController currentstock = TextEditingController();
@@ -503,6 +505,40 @@ class _AddProductPageState extends State<AddProductPage> {
                             SizedBox(
                               height: 10,
                             ),
+                            //cretaed at
+                            Text(
+                              "Created At",
+                              style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            ),
+                            SizedBox(
+                                width: 450,
+                                child: Customtextformfield(
+                                  hintText: "dd-mm-yyyy",
+                                  controller: created,
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            //updated at
+                            Text(
+                              "Updated At",
+                              style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            ),
+                            SizedBox(
+                                width: 450,
+                                child: Customtextformfield(
+                                  hintText: "dd-mm-yyyy",
+                                  controller: updated,
+                                )),
+                            SizedBox(
+                              height: 10,
+                            ),
                             //openingstock
                             Text(
                               "Opening Stock",
@@ -640,9 +676,13 @@ class _AddProductPageState extends State<AddProductPage> {
                                       "weight": productweight.text,
                                       "openstock": openingstock.text,
                                       "currentstock": currentstock.text,
+                                      "created": created.text,
+                                      'updated': updated.text
                                     });
 
                                     name.clear();
+                                    created.clear();
+                                    updated.clear();
                                     ourprice.clear();
                                     tax.clear();
                                     amount.clear();

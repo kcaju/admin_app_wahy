@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PartnerDetailsPage extends StatelessWidget {
@@ -41,6 +42,9 @@ class PartnerDetailsPage extends StatelessWidget {
         'password': 'dani123',
       },
     ];
+
+    // Get Firestore instance
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Use MediaQuery to get screen width and height
     double screenWidth = MediaQuery.of(context).size.width;
@@ -98,217 +102,214 @@ class PartnerDetailsPage extends StatelessWidget {
           height: 15,
         ),
         //table
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            dataRowHeight: 100,
-            columns: const [
-              DataColumn(
-                  label: Text(
-                '#',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 18),
-              )),
-              DataColumn(
-                  label: Text(
-                'Personal Id',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Image',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 18),
-              )),
-              DataColumn(
-                  label: Text(
-                'Name',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Email',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Username',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Password',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Created At',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-              DataColumn(
-                  label: Text(
-                'Action',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 16),
-              )),
-            ],
-            rows: List.generate(
-              category.length,
-              (index) {
-                final brand = category[index];
-                return DataRow(
-                  cells: [
-                    DataCell(Text(
-                      brand['#']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Text(
-                      brand['id']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Padding(
-                      padding: const EdgeInsets.all(5),
-                      child: Container(
-                        height: 150,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage(brand['Image']!))),
-                      ),
-                    )),
-                    DataCell(Text(
-                      brand['name']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Text(
-                      brand['email']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Text(
-                      brand['user']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Text(
-                      brand['password']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(Text(
-                      brand['created']!,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14),
-                    )),
-                    DataCell(PopupMenuButton<int>(
-                      child: Icon(
-                        Icons.more_vert,
-                        color: Colors.grey.shade600,
-                      ),
-                      onSelected: (value) {
-                        if (value == 1) {
-                          //edit
-                        } else if (value == 2) {
-                          //delete
-                        }
-                      }, //dropdown selection press
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 1,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.edit,
-                                size: 18,
-                                color: Colors.black,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Edit",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
+        StreamBuilder<QuerySnapshot>(
+          stream: firestore.collection("Partners").snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(child: Text("No Brands found."));
+            }
+
+            final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                dataRowHeight: 200,
+                columns: const [
+                  DataColumn(
+                      label: Text(
+                    '#',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Personal Id',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Image',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Name',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Email',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Username',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Password',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Created At',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                  DataColumn(
+                      label: Text(
+                    'Action',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 16),
+                  )),
+                ],
+                rows: List.generate(
+                  documents.length,
+                  (index) {
+                    final partners = documents[index];
+                    final String status = partners['status'];
+
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Text(
+                          partners['id']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Padding(
+                          padding: const EdgeInsets.all(5),
+                          child: Container(
+                            height: 150,
+                            width: 150,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(partners['url']!))),
                           ),
-                        ),
-                        PopupMenuItem(
-                          value: 2,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete_outline,
-                                size: 18,
-                                color: Colors.black,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                "Delete",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
+                        )),
+                        DataCell(Text(
+                          partners['name']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Text(
+                          partners['email']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Text(
+                          partners['username']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Text(
+                          partners['password']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(Text(
+                          partners['created']!,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14),
+                        )),
+                        DataCell(PopupMenuButton<int>(
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.grey.shade600,
                           ),
-                        ),
+                          onSelected: (value) async {
+                            if (value == 1) {
+                              // Delete logic
+                              await firestore
+                                  .collection('Partners')
+                                  .doc(partners.id)
+                                  .delete();
+                            }
+                          }, //dropdown selection press
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 1,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete_outline,
+                                    size: 18,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                          offset: Offset(0, 50), // Adjusts the popup position
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        )),
                       ],
-                      offset: Offset(0, 50), // Adjusts the popup position
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    )),
-                  ],
-                );
-              },
-            ),
-          ),
-        ),
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+        )
       ],
     );
   }

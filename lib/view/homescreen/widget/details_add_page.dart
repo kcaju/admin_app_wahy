@@ -1,6 +1,8 @@
 import 'package:admin_app_wahy/view/homescreen/widget/header_box.dart';
 import 'package:admin_app_wahy/view/widget/customtextformfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DetailsAddPage extends StatefulWidget {
   const DetailsAddPage({super.key});
@@ -17,7 +19,12 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
   TextEditingController email = TextEditingController();
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  TextEditingController created = TextEditingController();
+  TextEditingController image = TextEditingController();
   final formKey = GlobalKey<FormState>();
+
+  // Firebase Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     // Use MediaQuery to get screen width and height
@@ -146,33 +153,100 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                               height: 5,
                             ),
                             //choose file
-
-                            Container(
-                              padding: EdgeInsets.only(left: 12),
-                              height: 45,
+                            SizedBox(
                               width: 450,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 20,
-                                    width: 80,
-                                    color: Colors.grey.shade400,
-                                    child: Text("Choose File"),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text("No file chosen")
-                                ],
-                              ),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                color: Colors.white,
+                              child: TextFormField(
+                                controller: image,
+                                validator: (value) {
+                                  if (value != null && value.isNotEmpty) {
+                                    return null;
+                                  } else {
+                                    return "You must fill the field";
+                                  }
+                                },
+                                decoration: InputDecoration(
+                                    label: Text("Paste image Url of partner"),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5))),
                               ),
                             ),
                             SizedBox(
                               height: 10,
                             ),
+                            //cretaed at
+                            Text(
+                              "Created At",
+                              style: TextStyle(
+                                  color: Colors.grey.shade600,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            ),
+                            SizedBox(height: 10),
+                            SizedBox(
+                              width: 450,
+                              child: TextFormField(
+                                controller: created,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  hintText: "dd-mm-yyyy hh:mm AM/PM",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.calendar_today),
+                                    onPressed: () async {
+                                      // Show date picker
+                                      DateTime? pickedDate =
+                                          await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2000),
+                                        lastDate: DateTime(2100),
+                                      );
+
+                                      if (pickedDate != null) {
+                                        // Show time picker
+                                        TimeOfDay? pickedTime =
+                                            await showTimePicker(
+                                          context: context,
+                                          initialTime: TimeOfDay.now(),
+                                        );
+
+                                        if (pickedTime != null) {
+                                          // Combine date and time
+                                          DateTime pickedDateTime = DateTime(
+                                            pickedDate.year,
+                                            pickedDate.month,
+                                            pickedDate.day,
+                                            pickedTime.hour,
+                                            pickedTime.minute,
+                                          );
+
+                                          // Format the date and time
+                                          String formattedDateTime =
+                                              DateFormat("MMMM d, y h:mm a")
+                                                  .format(pickedDateTime);
+
+                                          // Save to controller
+                                          created.text = formattedDateTime;
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Please select a date and time";
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+
+                            //status
+
                             Text(
                               "Status",
                               style: TextStyle(
@@ -222,22 +296,47 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                             ),
                             //BUTTON
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (formKey.currentState!.validate()) {
-                                  id.clear();
-                                  name.clear();
-                                  email.clear();
-                                  password.clear();
-                                  username.clear();
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                    "Category Added Successfully !!!",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold),
-                                  )));
+                                  try {
+                                    await firestore.collection("Partners").add({
+                                      "name": name.text,
+                                      "status": _selectedStatus,
+                                      "url": image.text,
+                                      'email': email.text,
+                                      'username': username.text,
+                                      'password': password.text,
+                                      'created': created.text,
+                                      'id': id.text
+                                    });
+
+                                    name.clear();
+                                    username.clear();
+                                    password.clear();
+                                    created.clear();
+                                    email.clear();
+                                    image.clear();
+                                    id.clear();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Partner Added Successfully!",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    ));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Failed to add Partner: $e",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ));
+                                  }
                                 }
                               },
                               child: Container(
