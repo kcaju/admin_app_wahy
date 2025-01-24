@@ -1,5 +1,5 @@
 import 'package:admin_app_wahy/firebase_options.dart';
-import 'package:admin_app_wahy/view/homescreen/home_screen.dart';
+import 'package:admin_app_wahy/view/login_screen/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }

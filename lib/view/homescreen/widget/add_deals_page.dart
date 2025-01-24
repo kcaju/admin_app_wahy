@@ -1,6 +1,8 @@
 import 'package:admin_app_wahy/view/homescreen/widget/header_box.dart';
 import 'package:admin_app_wahy/view/widget/customtextformfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AddDealsPage extends StatefulWidget {
   const AddDealsPage({super.key});
@@ -20,8 +22,35 @@ class _AddDealsPageState extends State<AddDealsPage> {
   TextEditingController etime = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  final List types = ['type1', 'type2', 'type3'];
-  final List products = ['oil', 'dairy products'];
+  final List types = ['Weekly', 'Daily'];
+  List products = [];
+  // Firebase Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Fetch country from Firestore
+  Future<void> fetchProducts() async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('Products')
+          .where('status', isEqualTo: 'Active') // Only fetch active categories
+          .get();
+
+      setState(() {
+        products = snapshot.docs
+            .map((doc) =>
+                doc['productName'] as String) // Extract the 'name' field
+            .toList();
+      });
+    } catch (e) {
+      print("Error fetching products: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    fetchProducts();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +238,6 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                 controller: sdate,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  hintText: 'dd-mm-yyyy',
                                   border: OutlineInputBorder(),
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
@@ -224,11 +252,12 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                       );
 
                                       if (selectedDate != null) {
-                                        // Format the selected date
+                                        // Format the selected date as "Month day, year"
                                         String formattedDate =
-                                            "${selectedDate.day}-${selectedDate.month}-${selectedDate.year}";
+                                            DateFormat('MMMM d, y')
+                                                .format(selectedDate);
 
-                                        // Assign the date to the controller
+                                        // Assign the formatted date to the controller
                                         sdate.text = formattedDate;
                                       }
                                     },
@@ -258,22 +287,23 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                 controller: stime,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  hintText: '--:--',
                                   border: OutlineInputBorder(),
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
-                                      TimeOfDay? selectedTime =
-                                          await showTimePicker(
+                                      TimeOfDay? endTime = await showTimePicker(
                                         context: context,
                                         initialTime: TimeOfDay.now(),
                                       );
 
-                                      if (selectedTime != null) {
-                                        // Format the selected time
-                                        String formattedTime =
-                                            "${selectedTime.hour}:${selectedTime.minute}";
+                                      if (endTime != null) {
+                                        // Use localizations to format time in 12-hour format
+                                        final formattedTime =
+                                            MaterialLocalizations.of(context)
+                                                .formatTimeOfDay(endTime,
+                                                    alwaysUse24HourFormat:
+                                                        false);
 
-                                        // Assign the time to the controller
+                                        // Assign the formatted time to the controller
                                         stime.text = formattedTime;
                                       }
                                     },
@@ -304,11 +334,11 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                 controller: edate,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  hintText: 'dd-mm-yyyy',
                                   border: OutlineInputBorder(),
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
-                                      DateTime? endDate = await showDatePicker(
+                                      DateTime? selectedDate =
+                                          await showDatePicker(
                                         context: context,
                                         initialDate: DateTime.now(),
                                         firstDate:
@@ -317,12 +347,13 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                             DateTime(2050), // Adjust as needed
                                       );
 
-                                      if (endDate != null) {
-                                        // Format the selected date
+                                      if (selectedDate != null) {
+                                        // Format the selected date as "Month day, year"
                                         String formattedDate =
-                                            "${endDate.day}-${endDate.month}-${endDate.year}";
+                                            DateFormat('MMMM d, y')
+                                                .format(selectedDate);
 
-                                        // Assign the date to the controller
+                                        // Assign the formatted date to the controller
                                         edate.text = formattedDate;
                                       }
                                     },
@@ -338,7 +369,7 @@ class _AddDealsPageState extends State<AddDealsPage> {
                             SizedBox(
                               height: 10,
                             ),
-                            //starttime
+                            //end time
                             Text(
                               "End Time",
                               style: TextStyle(
@@ -352,7 +383,6 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                 controller: etime,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  hintText: '--:--',
                                   border: OutlineInputBorder(),
                                   suffixIcon: GestureDetector(
                                     onTap: () async {
@@ -362,11 +392,14 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                       );
 
                                       if (endTime != null) {
-                                        // Format the selected time
-                                        String formattedTime =
-                                            "${endTime.hour}:${endTime.minute}";
+                                        // Use localizations to format time in 12-hour format
+                                        final formattedTime =
+                                            MaterialLocalizations.of(context)
+                                                .formatTimeOfDay(endTime,
+                                                    alwaysUse24HourFormat:
+                                                        false);
 
-                                        // Assign the time to the controller
+                                        // Assign the formatted time to the controller
                                         etime.text = formattedTime;
                                       }
                                     },
@@ -379,31 +412,53 @@ class _AddDealsPageState extends State<AddDealsPage> {
                                 ),
                               ),
                             ),
-
                             SizedBox(
                               height: 15,
                             ),
                             //BUTTON
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (formKey.currentState!.validate()) {
-                                  type.clear();
-                                  price.clear();
-                                  product.clear();
-                                  offer.clear();
-                                  sdate.clear();
-                                  stime.clear();
-                                  edate.clear();
-                                  stime.clear();
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                    "Deal Added Successfully !!!",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold),
-                                  )));
+                                  try {
+                                    await firestore.collection("Deals").add({
+                                      "type": type.text,
+                                      "product": product.text,
+                                      "price": price.text,
+                                      "offer": offer.text,
+                                      "startTime": stime.text,
+                                      'startDate': sdate.text,
+                                      'endDate': edate.text,
+                                      'endTime': etime.text
+                                    });
+
+                                    type.clear();
+                                    product.clear();
+                                    stime.clear();
+                                    edate.clear();
+                                    etime.clear();
+                                    price.clear();
+                                    offer.clear();
+                                    sdate.clear();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Deals Added Successfully!",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    ));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Failed to add Deal: $e",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ));
+                                  }
                                 }
                               },
                               child: Container(

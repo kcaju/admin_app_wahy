@@ -1,4 +1,5 @@
 import 'package:admin_app_wahy/view/widget/customtextformfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ChangepasswordScreen extends StatefulWidget {
@@ -23,6 +24,63 @@ class _ChangepasswordScreenState extends State<ChangepasswordScreen> {
     bool isMobile = screenWidth < 600;
     bool isTablet = screenWidth >= 600 && screenWidth <= 1024;
     bool isDesktop = screenWidth > 1024;
+
+    // Get Firestore instance
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    Future<void> handleChangePassword() async {
+      if (formKey.currentState!.validate()) {
+        try {
+          // Query to validate old password
+          QuerySnapshot querySnapshot = await firestore
+              .collection('adminCredentials')
+              .where('password', isEqualTo: oldPassword.text)
+              .get();
+
+          if (querySnapshot.docs.isNotEmpty) {
+            // Old password matches, proceed to update
+            String docId = querySnapshot.docs.first.id;
+
+            await firestore.collection('adminCredentials').doc(docId).update({
+              'password': newPassword.text.trim(),
+            });
+
+            // Clear text fields and show success message
+            oldPassword.clear();
+            newPassword.clear();
+            confirmnewPassword.clear();
+
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                "Password Changed Successfully!",
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.green,
+            ));
+          } else {
+            // Old password is incorrect
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                "Old password is incorrect.",
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.red,
+            ));
+          }
+        } catch (e) {
+          // Handle errors
+          print("Error changing password: $e");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "An error occurred. Please try again.",
+              style: TextStyle(color: Colors.white),
+            ),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    }
+
     return SingleChildScrollView(
       child: Form(
         key: formKey,
@@ -120,21 +178,7 @@ class _ChangepasswordScreenState extends State<ChangepasswordScreen> {
             ),
             //BUTTON
             GestureDetector(
-              onTap: () {
-                if (formKey.currentState!.validate()) {
-                  oldPassword.clear();
-                  newPassword.clear();
-                  confirmnewPassword.clear();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(
-                    "Password Changed Successfully !!!",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold),
-                  )));
-                }
-              },
+              onTap: handleChangePassword,
               child: Container(
                 height: 50,
                 width: 200,

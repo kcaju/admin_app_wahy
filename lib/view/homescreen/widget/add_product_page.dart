@@ -33,8 +33,8 @@ class _AddProductPageState extends State<AddProductPage> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   List<String> _categories = [];
-  List countries = ['Ireland', 'India'];
-  List<String> brands = ['Jacme', 'kitchen treasures', 'amul'];
+  List countries = [];
+  List<String> brands = [];
   final List taxrate = ['6.15', '3.09'];
   final List products = ['oil', 'dairy products'];
 

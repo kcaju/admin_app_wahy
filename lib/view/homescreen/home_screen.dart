@@ -27,6 +27,7 @@ import 'package:admin_app_wahy/view/homescreen/widget/registered_customers_page.
 import 'package:admin_app_wahy/view/homescreen/widget/site_feedback_page.dart';
 import 'package:admin_app_wahy/view/homescreen/widget/subscription_page.dart';
 import 'package:admin_app_wahy/view/homescreen/widget/today_page.dart';
+import 'package:admin_app_wahy/view/login_screen/login_screen.dart';
 import 'package:admin_app_wahy/view/posters/poster_page.dart';
 import 'package:admin_app_wahy/view/posters/updateposter_page.dart';
 import 'package:flutter/material.dart';
@@ -1077,6 +1078,48 @@ class _HomeScreenState extends State<HomeScreen> {
                         //dropdwn flags
                         isChangePassword = false;
                         isViewSite = true;
+                      });
+                    } else if (p0 == 3) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
+                        (route) => false,
+                      );
+
+                      setState(() {
+                        isDashbord = false;
+                        isCountry = false;
+                        isBrands = false;
+                        isCategory = false;
+                        isProducts = false;
+                        isPendingorders = false;
+                        isCancelledorders = false;
+                        isOutforDelivery = false;
+                        isCompletedOrders = false;
+                        isDetails = false;
+                        isLogInfo = false;
+                        isDeals = false;
+                        isPoster1 = false;
+                        isPoster2 = false;
+                        isaddProduct = false;
+                        isPoster3 = false;
+                        isPoster4 = false;
+                        isPoster5 = false;
+                        isPoster6 = false;
+                        isaddBrand = false;
+                        isPoster7 = false;
+                        isaddCategory = false;
+                        isProductfeedback = false;
+                        isSitefeedback = false;
+                        isRegisteredCustomer = false;
+                        isBackupdata = false;
+                        isEnquiry = false;
+                        isSubscription = false;
+                        //dropdwn flags
+                        isChangePassword = false;
+                        isViewSite = false;
                       });
                     }
                   },
