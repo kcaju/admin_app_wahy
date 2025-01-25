@@ -1200,7 +1200,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     : isPoster1
                                                         ? PosterPage(
                                                             posterNumbr:
-                                                                "Poster 1",
+                                                                "Poster1",
                                                             onDeleteTap: () {
                                                               //deletion
                                                             },
@@ -1212,7 +1212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         (context) =>
                                                                             UpdateposterPage(
                                                                       posterNumbr:
-                                                                          "Poster 1",
+                                                                          "Poster1",
                                                                     ),
                                                                   ));
                                                             },
@@ -1220,7 +1220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         : isPoster2
                                                             ? PosterPage(
                                                                 posterNumbr:
-                                                                    "Poster 2",
+                                                                    "Poster2",
                                                                 onDeleteTap:
                                                                     () {
                                                                   //deletion
@@ -1234,7 +1234,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             (context) =>
                                                                                 UpdateposterPage(
                                                                           posterNumbr:
-                                                                              "Poster 2",
+                                                                              "Poster2",
                                                                         ),
                                                                       ));
                                                                 },
@@ -1242,7 +1242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             : isPoster3
                                                                 ? PosterPage(
                                                                     posterNumbr:
-                                                                        "Poster 3",
+                                                                        "Poster3",
                                                                     onDeleteTap:
                                                                         () {
                                                                       //deletion
@@ -1254,7 +1254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                           MaterialPageRoute(
                                                                             builder: (context) =>
                                                                                 UpdateposterPage(
-                                                                              posterNumbr: "Poster 3",
+                                                                              posterNumbr: "Poster3",
                                                                             ),
                                                                           ));
                                                                     },
@@ -1262,7 +1262,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 : isPoster4
                                                                     ? PosterPage(
                                                                         posterNumbr:
-                                                                            "Poster 4",
+                                                                            "Poster4",
                                                                         onDeleteTap:
                                                                             () {
                                                                           //deletion
@@ -1273,7 +1273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               context,
                                                                               MaterialPageRoute(
                                                                                 builder: (context) => UpdateposterPage(
-                                                                                  posterNumbr: "Poster 4",
+                                                                                  posterNumbr: "Poster4",
                                                                                 ),
                                                                               ));
                                                                         },
@@ -1281,7 +1281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     : isPoster5
                                                                         ? PosterPage(
                                                                             posterNumbr:
-                                                                                "Poster 5",
+                                                                                "Poster5",
                                                                             onDeleteTap:
                                                                                 () {
                                                                               //deletion
@@ -1292,14 +1292,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                   context,
                                                                                   MaterialPageRoute(
                                                                                     builder: (context) => UpdateposterPage(
-                                                                                      posterNumbr: "Poster 5",
+                                                                                      posterNumbr: "Poster5",
                                                                                     ),
                                                                                   ));
                                                                             },
                                                                           )
                                                                         : isPoster6
                                                                             ? PosterPage(
-                                                                                posterNumbr: "Poster 6",
+                                                                                posterNumbr: "Poster6",
                                                                                 onDeleteTap: () {
                                                                                   //deletion
                                                                                 },
@@ -1308,14 +1308,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                       context,
                                                                                       MaterialPageRoute(
                                                                                         builder: (context) => UpdateposterPage(
-                                                                                          posterNumbr: "Poster 6",
+                                                                                          posterNumbr: "Poster6",
                                                                                         ),
                                                                                       ));
                                                                                 },
                                                                               )
                                                                             : isPoster7
                                                                                 ? PosterPage(
-                                                                                    posterNumbr: "Poster 7",
+                                                                                    posterNumbr: "Poster7",
                                                                                     onDeleteTap: () {
                                                                                       //deletion
                                                                                     },
@@ -1324,7 +1324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                           context,
                                                                                           MaterialPageRoute(
                                                                                             builder: (context) => UpdateposterPage(
-                                                                                              posterNumbr: "Poster 7",
+                                                                                              posterNumbr: "Poster7",
                                                                                             ),
                                                                                           ));
                                                                                     },

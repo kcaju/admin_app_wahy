@@ -1,5 +1,6 @@
 import 'package:admin_app_wahy/view/homescreen/widget/header_box.dart';
 import 'package:admin_app_wahy/view/widget/customtextformfield.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UpdateposterPage extends StatefulWidget {
@@ -15,9 +16,38 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
   TextEditingController subtitle = TextEditingController();
   TextEditingController heading = TextEditingController();
   TextEditingController heading2 = TextEditingController();
+  TextEditingController posterUrl = TextEditingController();
 
-  final List<String> categories = ["Beverages", "Fruits", "Powders"];
+  List<String> _categories = [];
+  // Firebase Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final formKey = GlobalKey<FormState>();
+
+  // Fetch categories from Firestore
+  Future<void> fetchCategories() async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('Categories')
+          .where('status', isEqualTo: 'Active') // Only fetch active categories
+          .get();
+
+      setState(() {
+        _categories = snapshot.docs
+            .map((doc) =>
+                doc['categoryName'] as String) // Extract the 'name' field
+            .toList();
+      });
+    } catch (e) {
+      print("Error fetching categories: $e");
+    }
+  }
+
+  @override
+  void initState() {
+    fetchCategories();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use MediaQuery to get screen width and height
@@ -102,19 +132,25 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 20,
-                                            width: 80,
-                                            color: Colors.grey.shade400,
-                                            child: Text("Choose File"),
-                                          ),
-                                          SizedBox(
-                                            width: 5,
-                                          ),
-                                          Text("No file chosen")
-                                        ],
+                                      SizedBox(
+                                        width: 250,
+                                        child: TextFormField(
+                                          controller: posterUrl,
+                                          validator: (value) {
+                                            if (value != null &&
+                                                value.isNotEmpty) {
+                                              return null;
+                                            } else {
+                                              return "You must fill the field";
+                                            }
+                                          },
+                                          decoration: InputDecoration(
+                                              label: Text("Paste poster Url"),
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          5))),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -134,7 +170,6 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
                                       ),
                                       SizedBox(
                                         width: 200,
-                                        height: 40,
                                         child: Customtextformfield(
                                             hintText: "", controller: subtitle),
                                       )
@@ -156,7 +191,6 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
                                       ),
                                       SizedBox(
                                         width: 200,
-                                        height: 40,
                                         child: Customtextformfield(
                                             hintText: "", controller: heading),
                                       )
@@ -178,7 +212,6 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
                                       ),
                                       SizedBox(
                                         width: 200,
-                                        height: 40,
                                         child: Customtextformfield(
                                             hintText: "", controller: heading2),
                                       )
@@ -202,7 +235,7 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
                                       ),
                                       DropdownButton(
                                         value: dropValue,
-                                        items: categories
+                                        items: _categories
                                             .map<DropdownMenuItem<String>>(
                                                 (String value) {
                                           return DropdownMenuItem<String>(
@@ -231,20 +264,278 @@ class _UpdateposterPageState extends State<UpdateposterPage> {
 
                             //BUTTON
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 if (formKey.currentState!.validate()) {
-                                  subtitle.clear();
-                                  heading.clear();
-                                  heading2.clear();
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                    "Poster Created Successfully !!!",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 35,
-                                        fontWeight: FontWeight.bold),
-                                  )));
+                                  if (widget.posterNumbr == 'Poster1') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster1")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster1 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster1: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster2') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster2")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster2 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster2: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster3') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster3")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster3 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster3: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster4') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster4")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster4 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster4: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster5') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster5")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster5 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster5: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster6') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster6")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster6 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster6: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else if (widget.posterNumbr == 'Poster7') {
+                                    try {
+                                      await firestore
+                                          .collection("Poster7")
+                                          .add({
+                                        "subtitle": subtitle.text,
+                                        "heading1": heading.text,
+                                        "heading2": heading2.text,
+                                        "posterUrl": posterUrl.text,
+                                        'category': dropValue,
+                                        "posterNumbr": widget.posterNumbr
+                                      });
+
+                                      posterUrl.clear();
+                                      heading2.clear();
+                                      subtitle.clear();
+                                      heading.clear();
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Poster7 Added Successfully!",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ));
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text(
+                                          "Failed to add Poster7: $e",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
+                                  } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        "Invalid poster number. Data not added.",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      backgroundColor: Colors.orange,
+                                    ));
+                                  }
                                 }
                               },
                               child: Container(
