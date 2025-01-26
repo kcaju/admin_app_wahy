@@ -659,7 +659,8 @@ class _AddProductPageState extends State<AddProductPage> {
                               onTap: () async {
                                 if (formKey.currentState!.validate()) {
                                   try {
-                                    await firestore.collection("Products").add({
+                                    // Prepare product details
+                                    final productDetails = {
                                       "productName": name.text,
                                       "status": _selectedStatus,
                                       "productUrl": productUrl.text,
@@ -677,8 +678,45 @@ class _AddProductPageState extends State<AddProductPage> {
                                       "openstock": openingstock.text,
                                       "currentstock": currentstock.text,
                                       "created": created.text,
-                                      'updated': updated.text
-                                    });
+                                      "updated": updated.text,
+                                    };
+
+                                    // Add product to Products collection
+                                    await firestore
+                                        .collection("Products")
+                                        .add(productDetails);
+
+                                    // Find the category document
+                                    final categoryQuery = await firestore
+                                        .collection("Categories")
+                                        .where("categoryName",
+                                            isEqualTo: category.text)
+                                        .limit(1)
+                                        .get();
+
+                                    if (categoryQuery.docs.isNotEmpty) {
+                                      final categoryDoc =
+                                          categoryQuery.docs.first;
+
+                                      // Update the category with the product details
+                                      await firestore
+                                          .collection("Categories")
+                                          .doc(categoryDoc.id)
+                                          .update({
+                                        "products": FieldValue.arrayUnion(
+                                            [productDetails]),
+                                      });
+                                    } else {
+                                      // Handle the case where the category does not exist
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: const Text(
+                                          "Category not found. Product added without updating a category.",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        backgroundColor: Colors.orange,
+                                      ));
+                                    }
 
                                     name.clear();
                                     created.clear();

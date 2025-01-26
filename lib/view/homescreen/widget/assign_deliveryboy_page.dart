@@ -1,5 +1,7 @@
 import 'package:admin_app_wahy/view/homescreen/widget/header_box.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 class AssignDeliveryboyPage extends StatefulWidget {
   const AssignDeliveryboyPage({super.key});
@@ -9,9 +11,51 @@ class AssignDeliveryboyPage extends StatefulWidget {
 }
 
 class _AssignDeliveryboyPageState extends State<AssignDeliveryboyPage> {
-  final List deliveryBoys = ['boy 1', 'boy 2', 'boy 3'];
+  List deliveryBoys = [];
   TextEditingController boy = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  String? selectedEmail;
+  // Firestore instance
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  // Fetch partners from Firestore
+  Future<void> fetchPartners() async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('Partners')
+          .where('status', isEqualTo: 'Active')
+          .get();
+
+      setState(() {
+        deliveryBoys = snapshot.docs
+            .map((doc) => {
+                  'name': doc['name'] as String,
+                  'email': doc['email'] as String,
+                })
+            .toList();
+      });
+    } catch (e) {
+      print("Error fetching partners: $e");
+    }
+  }
+
+  // // Send email using share_plus
+  // void sendEmail(String recipientEmail) {
+  //   final emailUri = Uri(
+  //     scheme: 'mailto',
+  //     path: recipientEmail,
+  //     query: Uri.encodeQueryComponent(
+  //         'subject=New Delivery Assignment&body=You have been assigned a new delivery task.'),
+  //   ).toString();
+
+  //   Share.share(emailUri);
+  // }
+
+  @override
+  void initState() {
+    fetchPartners();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +116,7 @@ class _AssignDeliveryboyPageState extends State<AssignDeliveryboyPage> {
                                 controller: boy,
                                 readOnly: true,
                                 decoration: InputDecoration(
-                                  hintText: 'Select Category',
+                                  hintText: 'Select Delivery Boy',
                                   border: OutlineInputBorder(),
                                   suffixIcon: PopupMenuButton<String>(
                                     child: Icon(
@@ -81,16 +125,19 @@ class _AssignDeliveryboyPageState extends State<AssignDeliveryboyPage> {
                                       color: Colors.black,
                                     ),
                                     onSelected: (value) {
-                                      // Handle dropdown selection
-                                      boy.text = value;
+                                      final selectedBoy =
+                                          deliveryBoys.firstWhere(
+                                              (boy) => boy['name'] == value);
+                                      boy.text = selectedBoy['name']!;
+                                      selectedEmail = selectedBoy['email'];
                                       setState(() {});
                                     },
                                     itemBuilder: (context) {
                                       return deliveryBoys
                                           .map((category) =>
                                               PopupMenuItem<String>(
-                                                value: category,
-                                                child: Text(category),
+                                                value: category['name']!,
+                                                child: Text(category['name']!),
                                               ))
                                           .toList();
                                     },
@@ -109,7 +156,10 @@ class _AssignDeliveryboyPageState extends State<AssignDeliveryboyPage> {
                             //BUTTON
                             GestureDetector(
                               onTap: () {
-                                if (formKey.currentState!.validate()) {
+                                if (formKey.currentState!.validate() &&
+                                    selectedEmail != null) {
+                                  Share.share(
+                                      "You have been assigned a new delivery task.Please collect it from our office");
                                   boy.clear();
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(

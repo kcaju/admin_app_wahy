@@ -299,7 +299,10 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                               onTap: () async {
                                 if (formKey.currentState!.validate()) {
                                   try {
-                                    await firestore.collection("Partners").add({
+                                    await firestore
+                                        .collection("Partners")
+                                        .doc(name.text)
+                                        .set({
                                       "name": name.text,
                                       "status": _selectedStatus,
                                       "url": image.text,

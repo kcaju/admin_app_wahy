@@ -110,7 +110,7 @@ class PartnerDetailsPage extends StatelessWidget {
             }
 
             if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-              return const Center(child: Text("No Brands found."));
+              return const Center(child: Text("No Partners found."));
             }
 
             final List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
