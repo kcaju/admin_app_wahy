@@ -7,30 +7,6 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map> category = [
-      {
-        'CategoryName': 'Curry Powders',
-        '#': '1',
-        'Status': '',
-        'Action': '',
-        'Image': 'assets/images/powders.jpg'
-      },
-      {
-        'CategoryName': 'Fruits',
-        '#': '2',
-        'Status': '',
-        'Action': '',
-        'Image': 'assets/images/fruit.jpg'
-      },
-      {
-        'CategoryName': 'Fruit & Vegetables',
-        '#': '3',
-        'Status': '',
-        'Action': '',
-        'Image': 'assets/images/vegetables.jpg'
-      },
-    ];
-
     // Get Firestore instance
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
 

@@ -196,7 +196,7 @@ class PartnerDetailsPage extends StatelessWidget {
                   documents.length,
                   (index) {
                     final partners = documents[index];
-                    final String status = partners['status'];
+                    final String id = partners['id'];
 
                     return DataRow(
                       cells: [
@@ -267,10 +267,10 @@ class PartnerDetailsPage extends StatelessWidget {
                           ),
                           onSelected: (value) async {
                             if (value == 1) {
-                              // Delete logic
+                              // Delete from Firestore
                               await firestore
                                   .collection('Partners')
-                                  .doc(partners.id)
+                                  .doc(id)
                                   .delete();
                             }
                           }, //dropdown selection press

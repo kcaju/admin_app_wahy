@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class PendingorderProducts extends StatelessWidget {
   const PendingorderProducts({super.key, required this.products});
-  final List<Map<String, String>> products;
+  final List<dynamic> products;
 
   @override
   Widget build(BuildContext context) {
@@ -60,9 +60,10 @@ class PendingorderProducts extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               fit: BoxFit.fill,
-                                              image: AssetImage(products[index]
-                                                      ['image'] ??
-                                                  "")),
+                                              image: NetworkImage(
+                                                  products[index]
+                                                          ['productUrl'] ??
+                                                      "")),
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(15),
                                               topRight: Radius.circular(15))),
@@ -73,7 +74,9 @@ class PendingorderProducts extends StatelessWidget {
                                       child: Column(
                                         children: [
                                           Text(
-                                            "${products[index]['name']}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            "${products[index]['productName']}",
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w600,
@@ -83,7 +86,7 @@ class PendingorderProducts extends StatelessWidget {
                                             height: 15,
                                           ),
                                           Text(
-                                            "Price:${products[index]['price']}",
+                                            "Price:${products[index]['ourPrice'].toString()}",
                                             style: TextStyle(
                                                 color: Colors.grey.shade600,
                                                 fontWeight: FontWeight.w600,

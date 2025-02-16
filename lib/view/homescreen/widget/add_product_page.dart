@@ -670,7 +670,7 @@ class _AddProductPageState extends State<AddProductPage> {
                                       "description": description.text,
                                       "country": country.text,
                                       "originalPrice": ogPrice.text,
-                                      "ourPrice": ourprice.text,
+                                      "ourPrice": int.parse(ourprice.text),
                                       "taxrate": tax.text,
                                       "amount": amount.text,
                                       "gross": gross.text,

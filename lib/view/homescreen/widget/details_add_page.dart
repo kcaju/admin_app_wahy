@@ -1,6 +1,7 @@
 import 'package:admin_app_wahy/view/homescreen/widget/header_box.dart';
 import 'package:admin_app_wahy/view/widget/customtextformfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +26,8 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
 
   // Firebase Firestore instance
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     // Use MediaQuery to get screen width and height
@@ -68,17 +71,17 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                               height: 15,
                             ),
                             //id
-                            Text(
-                              "Personal Id",
-                              style: TextStyle(
-                                  color: Colors.grey.shade600,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15),
-                            ),
-                            SizedBox(
-                                width: 450,
-                                child: Customtextformfield(
-                                    hintText: "", controller: id)),
+                            // Text(
+                            //   "Personal Id",
+                            //   style: TextStyle(
+                            //       color: Colors.grey.shade600,
+                            //       fontWeight: FontWeight.w600,
+                            //       fontSize: 15),
+                            // ),
+                            // SizedBox(
+                            //     width: 450,
+                            //     child: Customtextformfield(
+                            //         hintText: "", controller: id)),
                             //name
                             SizedBox(
                               height: 15,
@@ -299,20 +302,31 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                               onTap: () async {
                                 if (formKey.currentState!.validate()) {
                                   try {
+                                    // Step 1: Create the user account in Firebase Authentication
+                                    UserCredential userCredential = await _auth
+                                        .createUserWithEmailAndPassword(
+                                      email: email.text.trim(),
+                                      password: password.text.trim(),
+                                    );
+
+                                    // Step 2: Add the user details to Firestore under the 'Partners' collection
                                     await firestore
                                         .collection("Partners")
-                                        .doc(name.text)
+                                        .doc(userCredential.user!.uid)
                                         .set({
                                       "name": name.text,
                                       "status": _selectedStatus,
                                       "url": image.text,
                                       'email': email.text,
-                                      'username': username.text,
                                       'password': password.text,
+                                      'username': username.text,
                                       'created': created.text,
-                                      'id': id.text
+                                      'id': userCredential.user!.uid,
+                                      'uid': userCredential.user!
+                                          .uid // Save the UID for reference
                                     });
 
+                                    // Clear the input fields
                                     name.clear();
                                     username.clear();
                                     password.clear();
@@ -320,6 +334,8 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                                     email.clear();
                                     image.clear();
                                     id.clear();
+
+                                    // Show success message
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text(
@@ -331,6 +347,7 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                                       backgroundColor: Colors.green,
                                     ));
                                   } catch (e) {
+                                    // Handle errors and show error message
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
                                       content: Text(
@@ -345,18 +362,20 @@ class _DetailsAddPageState extends State<DetailsAddPage> {
                               child: Container(
                                 height: 50,
                                 width: 200,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
                                 child: Center(
                                   child: Text(
                                     "CREATE PARTNER",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
-                                decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    borderRadius: BorderRadius.circular(30)),
                               ),
                             )
                           ],

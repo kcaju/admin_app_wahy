@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore: ^5.6.2
   intl: ^0.20.1
   share_plus: ^10.1.4
+  firebase_auth: ^5.4.1
   
   
 

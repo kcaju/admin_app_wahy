@@ -1,7 +1,18 @@
 import 'package:flutter/material.dart';
 
 class InvoicePage extends StatelessWidget {
-  const InvoicePage({super.key});
+  const InvoicePage(
+      {super.key,
+      required this.cartItems,
+      required this.orderid,
+      required this.invoiceId,
+      required this.paymentMethod,
+      required this.address,
+      required this.currentDate,
+      required this.totalPrice});
+  final List<dynamic> cartItems;
+  final String orderid, invoiceId, paymentMethod, address, currentDate;
+  final num totalPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +143,7 @@ class InvoicePage extends StatelessWidget {
                                   width: 11,
                                 ),
                                 Text(
-                                  "#937673",
+                                  invoiceId,
                                   style: TextStyle(
                                       color: Colors.grey.shade700,
                                       fontWeight: FontWeight.normal,
@@ -157,7 +168,7 @@ class InvoicePage extends StatelessWidget {
                                   width: 30,
                                 ),
                                 Text(
-                                  "#937673",
+                                  orderid,
                                   style: TextStyle(
                                       color: Colors.grey.shade700,
                                       fontWeight: FontWeight.normal,
@@ -182,7 +193,7 @@ class InvoicePage extends StatelessWidget {
                                   width: 55,
                                 ),
                                 Text(
-                                  "Jan .1, 2025",
+                                  currentDate,
                                   style: TextStyle(
                                       color: Colors.grey.shade700,
                                       fontWeight: FontWeight.normal,
@@ -248,7 +259,7 @@ class InvoicePage extends StatelessWidget {
                                           width: 11,
                                         ),
                                         Text(
-                                          "#937673",
+                                          invoiceId,
                                           style: TextStyle(
                                               color: Colors.grey.shade700,
                                               fontWeight: FontWeight.normal,
@@ -273,7 +284,7 @@ class InvoicePage extends StatelessWidget {
                                           width: 30,
                                         ),
                                         Text(
-                                          "#937673",
+                                          orderid,
                                           style: TextStyle(
                                               color: Colors.grey.shade700,
                                               fontWeight: FontWeight.normal,
@@ -298,7 +309,7 @@ class InvoicePage extends StatelessWidget {
                                           width: 55,
                                         ),
                                         Text(
-                                          "Jan .1, 2025",
+                                          currentDate,
                                           style: TextStyle(
                                               color: Colors.grey.shade700,
                                               fontWeight: FontWeight.normal,
@@ -374,7 +385,7 @@ class InvoicePage extends StatelessWidget {
                               height: 15,
                             ),
                             Text(
-                              "Gokulam Nivas Valiyannur North varam PO,Kerala",
+                              address,
                               style: TextStyle(
                                   color: Colors.grey.shade700,
                                   fontWeight: FontWeight.normal,
@@ -414,7 +425,7 @@ class InvoicePage extends StatelessWidget {
                                     height: 15,
                                   ),
                                   Text(
-                                    "Gokulam Nivas Valiyannur North varam PO,Kerala",
+                                    address,
                                     style: TextStyle(
                                         color: Colors.grey.shade700,
                                         fontWeight: FontWeight.normal,
@@ -476,13 +487,13 @@ class InvoicePage extends StatelessWidget {
                         )),
                       ],
                       rows: List.generate(
-                        purchase.length,
+                        cartItems.length,
                         (index) {
-                          final brand = purchase[index];
+                          final item = cartItems[index];
                           return DataRow(
                             cells: [
                               DataCell(Text(
-                                brand['sr']!,
+                                '${index + 1}',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
@@ -493,8 +504,8 @@ class InvoicePage extends StatelessWidget {
                                   CircleAvatar(
                                     backgroundColor: Colors.grey.shade300,
                                     radius: 20,
-                                    child: Image.asset(
-                                      brand['image']!,
+                                    child: Image.network(
+                                      item['productUrl'],
                                       height: 20,
                                     ),
                                   ),
@@ -502,7 +513,7 @@ class InvoicePage extends StatelessWidget {
                                     width: 8,
                                   ),
                                   Text(
-                                    brand['product']!,
+                                    item['productName'],
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontWeight: FontWeight.w600,
@@ -511,21 +522,21 @@ class InvoicePage extends StatelessWidget {
                                 ],
                               )),
                               DataCell(Text(
-                                brand['qty']!,
+                                item['quantity'].toString(),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14),
                               )),
                               DataCell(Text(
-                                brand['price']!,
+                                item['originalPrice'],
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14),
                               )),
                               DataCell(Text(
-                                brand['amount']!,
+                                item['ourPrice'].toString(),
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.w600,
@@ -559,7 +570,7 @@ class InvoicePage extends StatelessWidget {
                                 height: 5,
                               ),
                               Text(
-                                "COD",
+                                paymentMethod,
                                 style: TextStyle(
                                     color: Colors.grey.shade700,
                                     fontWeight: FontWeight.w500,
@@ -599,7 +610,7 @@ class InvoicePage extends StatelessWidget {
                                 height: 5,
                               ),
                               Text(
-                                "13.56",
+                                totalPrice.toString(),
                                 style: TextStyle(
                                     color: Colors.green,
                                     fontWeight: FontWeight.bold,
@@ -628,7 +639,7 @@ class InvoicePage extends StatelessWidget {
                                     height: 5,
                                   ),
                                   Text(
-                                    "COD",
+                                    paymentMethod,
                                     style: TextStyle(
                                         color: Colors.grey.shade700,
                                         fontWeight: FontWeight.w500,
@@ -672,7 +683,7 @@ class InvoicePage extends StatelessWidget {
                                     height: 5,
                                   ),
                                   Text(
-                                    "13.56",
+                                    totalPrice.toString(),
                                     style: TextStyle(
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold,

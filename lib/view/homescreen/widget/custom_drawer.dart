@@ -570,67 +570,67 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ],
               ),
               //feedback
-              ExpansionTile(
-                leading: Icon(
-                  Icons.person,
-                  color: Colors.grey.shade600,
-                ),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right,
-                  color: Colors.grey,
-                ),
-                title: Text(
-                  "Feedback",
-                  style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-                children: [
-                  SizedBox(
-                    height: 5,
-                  ),
-                  //product
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: GestureDetector(
-                        onTap: widget.onProductFeedbackTap,
-                        child: Text(
-                          "Product Feedback",
-                          style: TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  //site
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: GestureDetector(
-                        onTap: widget.onSiteFeedbackTap,
-                        child: Text(
-                          "Site Feedback",
-                          style: TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
+              // ExpansionTile(
+              //   leading: Icon(
+              //     Icons.person,
+              //     color: Colors.grey.shade600,
+              //   ),
+              //   trailing: Icon(
+              //     Icons.keyboard_arrow_right,
+              //     color: Colors.grey,
+              //   ),
+              //   title: Text(
+              //     "Feedback",
+              //     style: TextStyle(
+              //         color: Colors.grey,
+              //         fontWeight: FontWeight.bold,
+              //         fontSize: 14),
+              //   ),
+              //   children: [
+              //     SizedBox(
+              //       height: 5,
+              //     ),
+              //     //product
+              //     Align(
+              //       alignment: Alignment.centerLeft,
+              //       child: Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 50),
+              //         child: GestureDetector(
+              //           onTap: widget.onProductFeedbackTap,
+              //           child: Text(
+              //             "Product Feedback",
+              //             style: TextStyle(
+              //                 color: Colors.grey, fontWeight: FontWeight.bold),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       height: 10,
+              //     ),
+              //     //site
+              //     Align(
+              //       alignment: Alignment.centerLeft,
+              //       child: Padding(
+              //         padding: const EdgeInsets.symmetric(horizontal: 50),
+              //         child: GestureDetector(
+              //           onTap: widget.onSiteFeedbackTap,
+              //           child: Text(
+              //             "Site Feedback",
+              //             style: TextStyle(
+              //                 color: Colors.grey, fontWeight: FontWeight.bold),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       height: 5,
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(
+              //   height: 15,
+              // ),
               //enquiry
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -660,58 +660,58 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 height: 15,
               ),
               //subscription
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: GestureDetector(
-                  onTap: widget.onSubscriptionTap,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.grey.shade700,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Subscription",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 15,
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 15),
+              //   child: GestureDetector(
+              //     onTap: widget.onSubscriptionTap,
+              //     child: Row(
+              //       children: [
+              //         Icon(
+              //           Icons.person,
+              //           color: Colors.grey.shade700,
+              //         ),
+              //         SizedBox(
+              //           width: 10,
+              //         ),
+              //         Text(
+              //           "Subscription",
+              //           style: TextStyle(
+              //               color: Colors.grey,
+              //               fontWeight: FontWeight.bold,
+              //               fontSize: 14),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(
+              //   height: 15,
+              // ),
               //registerdcustomers
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: GestureDetector(
-                  onTap: widget.onRegistredcustomerTap,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.person,
-                        color: Colors.grey.shade700,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Registered Customers",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14),
-                      )
-                    ],
-                  ),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 15),
+              //   child: GestureDetector(
+              //     onTap: widget.onRegistredcustomerTap,
+              //     child: Row(
+              //       children: [
+              //         Icon(
+              //           Icons.person,
+              //           color: Colors.grey.shade700,
+              //         ),
+              //         SizedBox(
+              //           width: 10,
+              //         ),
+              //         Text(
+              //           "Registered Customers",
+              //           style: TextStyle(
+              //               color: Colors.grey,
+              //               fontWeight: FontWeight.bold,
+              //               fontSize: 14),
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
               SizedBox(
                 height: 15,
               ),

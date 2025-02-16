@@ -316,7 +316,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                               fontSize: 14),
                         )),
                         DataCell(Text(
-                          product['ourPrice'],
+                          product['ourPrice'].toString(),
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
